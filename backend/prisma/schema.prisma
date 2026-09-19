@@ -1,0 +1,53 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  BUYER
+  SUPPLIER
+}
+
+model User {
+  id         Int      @id @default(autoincrement())
+  name       String
+  email      String   @unique
+  password   String
+  role       Role
+  createdAt  DateTime @default(now())
+
+  rfqs       RFQ[]
+  quotations Quotation[]
+}
+
+model RFQ {
+  id               Int      @id @default(autoincrement())
+  productName      String
+  description      String
+  quantity         Int
+  deliveryLocation String
+  deadline         DateTime
+  buyerId          Int
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  buyer      User        @relation(fields: [buyerId], references: [id])
+  quotations Quotation[]
+}
+
+model Quotation {
+  id           Int      @id @default(autoincrement())
+  quotedPrice  Float
+  deliveryTime String
+  message      String?
+  rfqId        Int
+  supplierId   Int
+  createdAt    DateTime @default(now())
+
+  rfq      RFQ  @relation(fields: [rfqId], references: [id])
+  supplier User @relation(fields: [supplierId], references: [id])
+}
