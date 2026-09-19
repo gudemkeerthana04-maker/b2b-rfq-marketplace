@@ -260,6 +260,12 @@ router.post(
         });
       }
 
+      const {
+        quotedPrice,
+        deliveryTime,
+        message,
+      } = result.data;
+
       const rfq = await prisma.rFQ.findUnique({
         where: {
           id: rfqId,
@@ -269,6 +275,13 @@ router.post(
       if (!rfq) {
         return res.status(404).json({
           message: "RFQ not found",
+        });
+      }
+
+      // Prevent quotation submissions after the RFQ deadline
+      if (new Date() > rfq.deadline) {
+        return res.status(400).json({
+          message: "The RFQ deadline has passed",
         });
       }
 
@@ -289,9 +302,9 @@ router.post(
 
       const quotation = await prisma.quotation.create({
         data: {
-          quotedPrice: result.data.quotedPrice,
-          deliveryTime: result.data.deliveryTime,
-          message: result.data.message,
+          quotedPrice,
+          deliveryTime,
+          message: message ?? null,
           rfqId,
           supplierId: req.user.userId,
         },
