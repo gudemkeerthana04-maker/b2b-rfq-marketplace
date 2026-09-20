@@ -592,24 +592,24 @@ function App() {
 
   // Filter supplier RFQs
   const filteredRfqs = availableRfqs.filter((rfq) => {
-    const search = searchTerm.trim().toLowerCase();
-    const location = locationFilter.trim().toLowerCase();
+  const search = searchTerm.trim().toLowerCase();
+  const location = locationFilter.trim().toLowerCase();
 
-    const matchesSearch =
-      search === "" ||
-      rfq.productName.toLowerCase().includes(search) ||
-      rfq.description.toLowerCase().includes(search);
+  const matchesSearch =
+    search === "" ||
+    rfq.productName.toLowerCase().includes(search) ||
+    rfq.description.toLowerCase().includes(search);
 
-    const matchesLocation =
-      location === "" ||
-      rfq.deliveryLocation.toLowerCase().includes(location);
+  const matchesLocation =
+    location === "" ||
+    rfq.deliveryLocation.toLowerCase().includes(location);
 
-    const matchesDeadline =
-      deadlineFilter === "" ||
-      new Date(rfq.deadline) <= new Date(`${deadlineFilter}T23:59:59`);
+  const matchesDeadline =
+    deadlineFilter === "" ||
+    new Date(rfq.deadline) <= new Date(`${deadlineFilter}T23:59:59`);
 
-    return matchesSearch && matchesLocation && matchesDeadline;
-  });
+  return matchesSearch && matchesLocation && matchesDeadline;
+});
 
   const logout = () => {
     localStorage.removeItem("token");
